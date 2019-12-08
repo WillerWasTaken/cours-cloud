@@ -347,7 +347,7 @@ data "aws_vpc" "vpc" {
 
 data "aws_security_group" "default_sg" {
   name = "default"
-  vpc_id = "${data.aws_vpc.vpc.id}"
+  vpc_id = data.aws_vpc.vpc.id
 }
 
 resource "aws_instance" "app" {
