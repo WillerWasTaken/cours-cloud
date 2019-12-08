@@ -219,25 +219,15 @@ Idempotence des opérations, ne fait rien si ce n'est pas nécessaire
 
 #### Bootstrap
 
+[Docmumentation provider AWS](https://www.terraform.io/docs/providers/aws/index.html)
 -> se base sur ~/.aws/credentials
 Créer un premier fichier terraform infra.tf
-[La documentation de l'instance](https://www.terraform.io/docs/providers/aws/r/instance.html)
+[Utilisation du shared credentials file](https://www.terraform.io/docs/providers/aws/index.html#shared-credentials-file)
 ```
 provider "aws" {
   profile = "default"
   region  = "eu-west-3"
-  version = "~> 2.39"
 }
-
-resource "aws_instance" "my_app" {
-  ami           = "ami-0bb607148d8cf36fb"
-  instance_type = "t2.micro"
-}
-```
-
--> Récupérer les images
-```
-aws ec2 describe-images
 ```
 
 Initialiser terraform
@@ -246,13 +236,31 @@ terraform init
 tree .terraform
 ```
 
+Set la version comme conseillé
+```
+  version = "~> 2.39"
+```
+
+#### Création d'une instance
+
+[La documentation de l'instance](https://www.terraform.io/docs/providers/aws/r/instance.html)
+```
+resource "aws_instance" "my_app" {
+  ami           = "ami-0bb607148d8cf36fb"
+  instance_type = "t2.micro"
+}
+```
+
+-> Récupérer les images via la console (ec2 -> create instance), ou sinon via le cli
+```
+aws ec2 describe-images
+```
+
 Vérifier ce que la commande terraform va faire via un dry-run
 ```
 terraform plan
 ```
 "known after apply" -> générée par le provider puis renvoyé après l'application
-
-#### Création d'une instance
 
 Vraiment créer l'infrastructure une fois qu'elle a été validée
 ```
