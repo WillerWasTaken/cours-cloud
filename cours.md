@@ -20,16 +20,16 @@ Règles et notation
 - Mise en place des dépendances supplémentaires, bases de données etc
 - Mise à jour des machines, dépendances...
 
--> Ancien rôle du sys admin == ops
+-> Ancien rôle du sys admin == ops<br/>
 Beaucoup de tâches manuelles
 
 /!\ Pas qu'un seul environnement, dev, recette, qualification, perf, mco, staging, preprod, prod
 
-Nouvelles machines/nouvel environnement -> toutes les tâches à refaire
-Automatisation avec des scripts sh -> bug prone (rm -rf $MY\_FOLDER/)
+Nouvelles machines/nouvel environnement -> toutes les tâches à refaire.<br/>
+Automatisation avec des scripts sh -> bug prone (rm -rf $MY\_FOLDER/)<br/>
 Mise en place de stratégie de backup, pattern de fallback, problématique de disponibilité
 
-Sa responsabilité est de s'assurer de la stabilité et de la disponibilité du service
+Sa responsabilité est de s'assurer de la stabilité et de la disponibilité du service<br/>
 Parfois d'astreinte pour le run de l'application
 
 ## Le problème actuel de la plupart des entreprises, en route vers l'agilité
@@ -38,14 +38,14 @@ Parfois d'astreinte pour le run de l'application
 
 Feature versus stabilité, enjeux métier versus enjeux opérationels
 
-Le devops est une méthodologie de mise en commun des responsabilités pour une but commun
+Le devops est une méthodologie de mise en commun des responsabilités pour une but commun<br/>
 Son but est de mettre en place tout ce qui est nécessaire pour permettre de délivrer de la valeur efficacement
 
 ## L'agilité
 
 ### Les eccueils d'un ancien monde, le cycle en V
 
-Rédaction spec fonctionnelles, spec techniques, développement, tests, recette, tma
+Rédaction spec fonctionnelles, spec techniques, développement, tests, recette, tma<br/>
 [Cycle en V](https://www.editions-eni.fr/Open/download/f0195762-0a33-4876-ab6e-edf328f873cf/images/p30.png)
 
 - Cycle de développement très long avant d'apporter de la valeur
@@ -61,7 +61,7 @@ Non adapté à l'informatique aujourd'hui qui a beaucoup d'inconnues nécessitan
 
 [Le manifeste agile](https://agilemanifesto.org/iso/fr/manifesto.html)
 
-Emphase sur la communication
+Emphase sur la communication<br/>
 Une équipe autonome et responsable
 
 Framework scrum comme base de travail pour appliquer l'agile
@@ -77,14 +77,14 @@ Rituels :
 
 ## Retour sur le devops
 
-L'agilité appliquée à l'ops
-Les ops travaillent avec les dev
-L'ensemble des pratiques et outils mis en place pour permettre au dév d'apporter de la valeur
+L'agilité appliquée à l'ops<br/>
+Les ops travaillent avec les dev<br/>
+L'ensemble des pratiques et outils mis en place pour permettre au dév d'apporter de la valeur<br/>
 [devops](https://miro.medium.com/max/1982/1*EBXc9eJ1YRFLtkNI_djaAw.png)
 
 ## 12 factors app
 
-Ensemble de bonne pratique
+Ensemble de bonne pratique<br/>
 [12 factors](https://www.12factor.net)
 
 ## Build versus run
@@ -94,7 +94,8 @@ Ensemble de bonne pratique
 ## Un monde d'outils
 
 # J2
-SSH
+
+SSH<br/>
 -> Quel IP ?
 
 # Jour 2 : Le cloud, exemple d'AWS
@@ -107,7 +108,7 @@ Achat d'une baie de machine à configurer entièrement
 
 [Build vs buy](https://www.msystraining.com/wp-content/uploads/2019/05/build-versus-buy.jpg)
 
-Hardware on demand : exemple d'un MMO
+Hardware on demand : exemple d'un MMO<br/>
 Disposable hardware, utilisation à la demande
 
 Des acteurs aujourd'hui proposent des clouds :
@@ -116,22 +117,22 @@ Des acteurs aujourd'hui proposent des clouds :
 - GCP
 - OVH
 
-[Les options clouds](https://miro.medium.com/max/2688/1*b6MXaZWwYJATdF6vw2Z8Hw.png)
-[Pizza as a service](https://miro.medium.com/max/1396/1*WIxe9rvePZWX-VQgZDgMpQ.jpeg)
-Private Cloud (on premise) : Parc de machine à installer soit même
-IaaS : Service infrastructure, Amazon EC2, Google Cloud Compute Engine, Azure
-PaaS : Code poussé, build + run géré par le provider, Heroku, AWS Elastic Beanstalk, Google App Engine
-Faas : Fonction seule poussée, AWS lambda, Cloud functions, Azure functions
-Saas : Service disponible directement sur internet, Google apps, Office 365, Jira -> service cloud
+[Les options clouds](https://miro.medium.com/max/2688/1*b6MXaZWwYJATdF6vw2Z8Hw.png)<br/>
+[Pizza as a service](https://miro.medium.com/max/1396/1*WIxe9rvePZWX-VQgZDgMpQ.jpeg)<br/>
+- Private Cloud (on premise) : Parc de machine à installer soit même
+- IaaS : Service infrastructure, Amazon EC2, Google Cloud Compute Engine, Azure
+- PaaS : Code poussé, build + run géré par le provider, Heroku, AWS Elastic Beanstalk, Google App Engine
+- Faas : Fonction seule poussée, AWS lambda, Cloud functions, Azure functions
+- Saas : Service disponible directement sur internet, Google apps, Office 365, Jira -> service cloud
 
 ## Démonstration sur AWS
 
-VPC -> Création d'un nouveau VPC
-Subnet
+VPC -> Création d'un nouveau VPC<br/>
+Subnet<br/>
 CIDR notation
 
-EC2
-Se connecter dessus en ssh, [trouver l'utilisateur de l'image](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)
+EC2<br/>
+Se connecter dessus en ssh, [trouver l'utilisateur de l'image](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)<br/>
 Security group
 
 Pattern : Multi AZ, multi datacenter, multi region, multi cloud
@@ -145,12 +146,13 @@ SQS
 lambda ("serverless")
 
 AMI -> Créer un utilisateur de test
+
 zip -P tototiti credentials.zip credentials.csv
 
 ## Prérequis
 
-virtualenvwrapper
-awscli
+virtualenvwrapper<br/>
+awscli<br/>
 ```
 $ mkvirtualenv -p python3 epita
 $ deactivate
@@ -176,7 +178,7 @@ $ aws ec2 describe-instances
 
 TP : Déployer les applications https://github.com/WillerWasTaken/front-back-example sur les machines des étudiants
 
-Puis le faire dans vagrant
+Puis le faire dans vagrant<br/>
 -> essayer de se connecter sans `vagrant ssh`
 
 Reverse proxy pattern
@@ -187,7 +189,7 @@ Reverse proxy pattern
 
 Du code qui peut introduire des bugs
 
-Tests de non régression
+Tests de non régression<br/>
 Création des artefacts manuelles
 
 ## Le role de la CI
@@ -199,31 +201,31 @@ Fork project
 
 ### Problématique
 
-Destroy aws ? Multiple environement
+Destroy aws ? Multiple environement<br/>
 -> AWS console = dette
 
-Infrastructure as Code (IaC), langage descriptif maps clé/valeur
-Répéter sur tous les environnements la même infrastructure de manière automatisée
+Infrastructure as Code (IaC), langage descriptif maps clé/valeur<br/>
+Répéter sur tous les environnements la même infrastructure de manière automatisée<br/>
 Créer aisément une nouvelle infra/nouvel environnement
 
-[Liste des providers](https://www.terraform.io/docs/providers/index.html)
+[Liste des providers](https://www.terraform.io/docs/providers/index.html)<br/>
 Wrapper sur les API des clouds providers
 
 Terraform = moteur + provider
 
-Conservation d'un fichier state pour savoir quoi déployer
+Conservation d'un fichier state pour savoir quoi déployer<br/>
 => /!\ mise en commun du code
 
-Idempotence des opérations, ne fait rien si ce n'est pas nécessaire
+Idempotence des opérations, ne fait rien si ce n'est pas nécessaire<br/>
 => certaines opérations nécessitent la destruction et la recréation de ressources
 
 ### Hands on
 
 #### Bootstrap
 
-[Docmumentation provider AWS](https://www.terraform.io/docs/providers/aws/index.html)
--> se base sur ~/.aws/credentials
-Créer un premier fichier terraform infra.tf
+[Documentation provider AWS](https://www.terraform.io/docs/providers/aws/index.html)<br/>
+-> se base sur ~/.aws/credentials<br/>
+Créer un premier fichier terraform `infra.tf`<br/>
 [Utilisation du shared credentials file](https://www.terraform.io/docs/providers/aws/index.html#shared-credentials-file)
 ```
 provider "aws" {
@@ -270,7 +272,7 @@ terraform apply
 terraform show
 cat terraform.tfstates
 ```
-States => fichier ressources existantes aux yeux de terraform pour les opérations
+States => fichier ressources existantes aux yeux de terraform pour les opérations<br/>
 /!\ Fichiers à partager en équipe, possibilité de mettre en place un remote state /!\
 
 #### Modification d'image
@@ -285,7 +287,7 @@ $ terraform plan
 
 Comment récupérer l'IP de la machine ? Peut-on s'y connecter ?
 
-Se connecter via keypair
+Se connecter via keypair<br/>
 [Documentation keypair](https://www.terraform.io/docs/providers/aws/r/key_pair.html)
 ```
 resource "aws_key_pair" "app_key" {
@@ -302,12 +304,12 @@ resource "aws_instance" "app" {
 $ terraform apply
 ```
 
-L'instance doit elle être recréée ? Pourquoi ?
+L'instance doit elle être recréée ? Pourquoi ?<br/>
 Peut-on désormais se connecter via ssh ?
 
 #### Création de security group
 
-Créer le security group pour se connecter en ssh
+Créer le security group pour se connecter en ssh<br/>
 [Documentation security group](https://www.terraform.io/docs/providers/aws/r/security_group.html)
 ```
 resource "aws_security_group" "allow_ssh" {
@@ -336,7 +338,7 @@ A-t-on les mêmes security groups qu'avant ?
 
 #### La récupération de données existantes, le vpc et les security groups
 
-[Documentation data vpc](https://www.terraform.io/docs/providers/aws/d/vpc.html)
+[Documentation data vpc](https://www.terraform.io/docs/providers/aws/d/vpc.html)<br/>
 [Documentation data security groups](https://www.terraform.io/docs/providers/aws/d/security_group.html)
 ```
 data "aws_vpc" "vpc" {
@@ -370,6 +372,11 @@ Quelles ressources sont supprimées ? Lesquelles ne le sont pas ? Pourquoi ?
 
 À vous : Créer un nouveau vpc de dev avec tout ce qu'il faut et déployer l'instance dessus via terraform
 
+## Ansible
+
+### Problématique
+
+
 # Jour 5 : Vers la conteneurisation des applications, Docker, Kubenetes
 
 Problématique d'isolation des processus,
@@ -393,17 +400,19 @@ Intérêt :
 /var/log/stuff
 
 https://serverfault.com/questions/692309/what-is-the-difference-between-syslog-rsyslog-and-syslog-ng
-syslog : premier (historique), également le nom du protocol
-rsyslog : Présent sur certains systèmes, extension de syslog (fork)
-syslog-ng : référence, plus riche en feature, nouvelle syntaxe, from scratch
+- syslog : premier (historique), également le nom du protocol
+- rsyslog : Présent sur certains systèmes, extension de syslog (fork)
+- syslog-ng : référence, plus riche en feature, nouvelle syntaxe, from scratch
 
+```
 cat /etc/crontab
 cat /etc/cron.daily/logrotate
 cat /etc/logrotate.d/rsyslog
 
 dmesg -> cat /var/log/kern.log (journalctl -k)
+```
 
-## 
+## Les patterns/outils de logs
 
-ELK -> pour les logs applicatifs
+ELK -> pour les logs applicatifs<br>
 Prom/Graphana -> pour les logs systèmes, monitoring des machines
