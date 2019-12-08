@@ -130,6 +130,8 @@ VPC -> Création d'un nouveau VPC
 Subnet
 CIDR notation
 
+EC2
+Se connecter dessus en ssh, [trouver l'utilisateur de l'image](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)
 Security group
 
 Pattern : Multi AZ, multi datacenter, multi region, multi cloud
@@ -245,7 +247,7 @@ Set la version comme conseillé
 
 [La documentation de l'instance](https://www.terraform.io/docs/providers/aws/r/instance.html)
 ```
-resource "aws_instance" "my_app" {
+resource "aws_instance" "app" {
   ami           = "ami-0bb607148d8cf36fb"
   instance_type = "t2.micro"
 }
@@ -269,6 +271,7 @@ terraform show
 cat terraform.tfstates
 ```
 States => fichier ressources existantes aux yeux de terraform pour les opérations
+/!\ Fichiers à partager en équipe, possibilité de mettre en place un remote state /!\
 
 #### Modification d'image
 
@@ -280,6 +283,8 @@ $ terraform plan
 
 #### Se connecter via keypair
 
+Comment récupérer l'IP de la machine ? Peut-on s'y connecter ?
+
 Se connecter via keypair
 [Documentation keypair](https://www.terraform.io/docs/providers/aws/r/key_pair.html)
 ```
@@ -288,7 +293,7 @@ resource "aws_key_pair" "app_key" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
-resource "aws_instance" "my_app" {
+resource "aws_instance" "app" {
   key_name      = aws_key_pair.app_key.key_name
 
   ami           = "ami-087855b6c8b59a9e4"
@@ -296,8 +301,9 @@ resource "aws_instance" "my_app" {
 }
 $ terraform apply
 ```
+
 L'instance doit elle être recréée ? Pourquoi ?
-Peut-on désormais se connecter via ssh ? Comment récupérer l'ip ?
+Peut-on désormais se connecter via ssh ?
 
 #### Création de security group
 
@@ -307,24 +313,25 @@ Créer le security group pour se connecter en ssh
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh"
   description = "Allow SSH inbound traffic"
-  vpc_id      = "${data.aws_vpc.vpc.id}"
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = 0.0.0.0/0
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
-resource "aws_instance" "my_app" {
+resource "aws_instance" "app" {
   key_name      = aws_key_pair.app_key.key_name
 
   ami           = "ami-087855b6c8b59a9e4"
   instance_type = "t2.micro"
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}"]
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
 }
 ```
+Peut-on s'y connecter désormais ?
+
 A-t-on les mêmes security groups qu'avant ?
 
 #### La récupération de données existantes, le vpc et les security groups
@@ -341,17 +348,17 @@ data "aws_security_group" "default_sg" {
   vpc_id = "${data.aws_vpc.vpc.id}"
 }
 
-resource "aws_instance" "my_app" {
+resource "aws_instance" "app" {
   key_name      = aws_key_pair.app_key.key_name
 
   ami           = "ami-087855b6c8b59a9e4"
   instance_type = "t2.micro"
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}, ${data.aws_security_group.default_sg.id}"]
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id, data.aws_security_group.default_sg.id]
 }
 ```
-Accès à une ressource déjà existante, accessible via `"${data.my_type.my_var.my_field}"`
+Accès à une ressource déjà existante, accessible via `data.my_type.my_var.my_field`
 
-Peut-on désormais se connecter en ssh ? Comment récupérer l'ip via terraform ?
+Pourquoi a-t-on besoin de récupérer aussi le vpc ?
 
 #### Tout nettoyer a la fin
 
