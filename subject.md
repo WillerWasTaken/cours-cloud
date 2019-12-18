@@ -200,3 +200,62 @@ from your browser by using the public IP of the `EC2`:
 
 - `<public-ec2-ip>` access the front
 - `<public-ec2-ip>/api/user` access the backend
+
+## Automate infrastructure creation, Terraform to the recue
+
+From now on, the goal is to automate everything you did in the previous step
+using powerful automation tools that will do everything you just did with a
+single command. *With such tools you will be able to create a brand new
+environment identical to what you already have with little to no efforts*.
+
+The role of `Terraform` is to create every AWS resources previously created
+manually with the AWS web console. This is called the *provision* phase.
+`Terraform` **does not** install the applications in the machine, this will be
+the job of `Ansible` as seen later.
+
+### What is expected
+
+From a clean AWS architecture, without any instances nor any extra VPCs. Using
+`terraform apply` you must be able to create a full infrastructure :
+- A new VPC (and all related resources) with internet access
+- An instance running inside this PC
+- Security groups so that the instance can be reached by SSH and HTTP (port 80)
+- A key pair used to connect to the instance, the key file used must be
+**present locally in the machine launching the command**
+
+After applying the code, the newly created instance must be reachable by SSH
+using the key provided during the provision phase using `ssh ubuntu@<public-ip>`
+
+The terraform code must be stored in the git repository in a dedicated folder.
+
+### A few things to note
+
+- **ALWAYS USE THE SAME TERRAFORM VERSION**, terraform is pretty sensible to the
+version, the state file is bound to a particular so everyone must stick to the
+same version for the duration of the project
+- **TFSTATE FILE MUST BE MANIPULATED WITH CAUTION**, terraform stores all its
+state in a dedicated file called `terraform.tfstate`. This is how terraform
+knows which resources are managed by the code and what are their current states.
+When using `terraform apply`, always rely upon the same `terraform.tfstate` so
+that terraform knows the exact state of the infrastructure.<br/>
+If you end up in a weird state where you don't know anymore what terraform
+really manages, you can delete the state file and go to the AWS console to
+delete every resources so you can start again from a clean state...
+- Concerning the previous point, be careful to share the states file between the
+people doing `terraform apply`. Here are a few options you can do to properly
+work on terraform :
+  - Rigorously exchange the state file so the one doing `terraform apply` always
+uses the latest version. The state file can be added to the git repository
+  - Always `apply` on the same computer
+  - Work independently on seperate AWS accounts so one's can code and test on
+his own isolated environment
+- Use default shared credentials file that is located at
+`$HOME/.aws/credentials` as mentioned in the
+[provider documentation](https://www.terraform.io/docs/providers/aws/index.html)
+- Set the aws provider version as advised during the `terraform init`
+- Add the `.terraform` folder to the `.gitignore`, it contains downloaded
+terraform dependencies when launching `terraform init`
+- In the documentation, the resources you will need can be found in `EC2` and
+`VPC`
+- Before saying "yes" when applying, check how resources are changed
+- After applying, check the AWS console to see what is really done
