@@ -21,7 +21,8 @@ https://github.com/WillerWasTaken/front-back-example.
 Each group will have to fork the applications repository onto gitlab.com, the
 created repository must be set to **private**. Add each members of the group.
 Also **include [this guy](https://gitlab.com/WillerWasTaken)** (don't worry he
-doesn't bite) in with a read access to your repostiory.
+doesn't bite) in with a read access (at least `Reporter` role since the
+repository is private) to your repository.
 
 The entire code for the project will be stored here. You are free to organize
 the code as you wish. At first the repository will look like this:
@@ -62,7 +63,7 @@ resources will run in your VPC.
 
 Create an `EC2` instance that will hold the applications. It should be a
 `t2.micro` instance (free-tier eligible) that runs an `Ubuntu Server 18.04`
-image. The **only** ports accessile from anywhere are TCP **22 and 80**.
+image. The **only** ports accessible from anywhere are TCP **22 and 80**.
 
 By using `ssh`, connect to the instance to configure it manually first. Install
 every dependencies needed by the 2 applications to run properly in the instance.
@@ -247,7 +248,7 @@ work on terraform :
   - Rigorously exchange the state file so the one doing `terraform apply` always
 uses the latest version. The state file can be added to the git repository
   - Always `apply` on the same computer
-  - Work independently on seperate AWS accounts so one's can code and test on
+  - Work independently on separate AWS accounts so one's can code and test on
 his own isolated environment
 - Use default shared credentials file that is located at
 `$HOME/.aws/credentials` as mentioned in the
@@ -259,3 +260,44 @@ terraform dependencies when launching `terraform init`
 `VPC`
 - Before saying "yes" when applying, check how resources are changed
 - After applying, check the AWS console to see what is really done
+
+## Ansible, a new way of scripting your deployment
+
+Terraform takes care of all the provisioning of the infrastructure, but we now
+only have plain vms with the default image running on it. The goal is to install
+and run all the various applications in the deployed instance. Ansible is the
+tool to accomplish just that.
+
+### What is expected
+
+From a new EC2 machine without anything installed, using
+`ansible -i path/to/your/inventory_file app.yml` you must be able to install
+the applications you setup previously using ssh in the EC2 instance.
+- A front application as a systemd service
+- A back application as a systemd service
+- Nginx with the redirection rules mentioned previously
+- Every applications running and answering in their respective ports (80, 3000,
+  5000)
+- Same installation directory (/opt/front, /opt/back), services enabling/restart
+policy
+- Basically the same state you had when installing the applications manually
+
+For the code layout, a single playbook named `app.yml` using 3 roles
+`front`, `back`, `nginx` are expected.
+
+### A few things to note
+
+- Note carefully every commands used to install the various applications in
+order to report them using Ansible modules
+- After application of the playbook, check the state of the vm using ssh
+- Each time the instance is destroyed and then created again with terraform a
+new public IP will be assigned, report it to your inventory file and update the
+code base accordingly
+- Be careful with the order of your commands, successive runs will modify the
+state of the machine. Ansible may execute successfully because of the favorable
+initial state of the instance. It is advised to run the whole playbook in a
+fresh instance to check that modules are used in a coherent order
+- **Bonus**: Tired of modifying the host file everytime the infra is recreated ?
+You can use dynamic inventory to automatically retrieve the IP of the instance
+(cf `aws_ec2` ansible plugins). This step will require more work and will
+require you to adapt your CI pipeline accordingly
