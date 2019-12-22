@@ -217,7 +217,7 @@ the job of `Ansible` as seen later.
 ### What is expected
 
 From a clean AWS architecture, without any instances nor any extra VPCs. Using
-`terraform apply` you must be able to create a full infrastructure :
+`terraform apply` you must be able to create a full infrastructure:
 - A new VPC (and all related resources) with internet access
 - An instance running inside this PC
 - Security groups so that the instance can be reached by SSH and HTTP (port 80)
@@ -244,7 +244,7 @@ really manages, you can delete the state file and go to the AWS console to
 delete every resources so you can start again from a clean state...
 - Concerning the previous point, be careful to share the states file between the
 people doing `terraform apply`. Here are a few options you can do to properly
-work on terraform :
+work on terraform:
   - Rigorously exchange the state file so the one doing `terraform apply` always
 uses the latest version. The state file can be added to the git repository
   - Always `apply` on the same computer
@@ -301,3 +301,57 @@ fresh instance to check that modules are used in a coherent order
 You can use dynamic inventory to automatically retrieve the IP of the instance
 (cf `aws_ec2` ansible plugins). This step will require more work and will
 require you to adapt your CI pipeline accordingly
+
+## The final orchestration: Gitlab-CI
+
+*The role of the CI is to ensure the robustness of the application by launching
+the tests and also the packaging and deployment the application (CD). Therefore
+the CI is a central element in your Information System that will hold a lot of
+responsabilities since it has access to all the applications, the artifacts life
+cycle and the orchestration of your infrastructure (vm access, credentials,
+etc)*.
+
+Each group will have to build a pipeline using gitlab CI pipeline feature.
+
+So far terraform and ansible have been launched from your own personal computer.
+A better practice, is to let the CI do it automatically on your behalf.
+
+### What is expected
+
+Whenever a pipeline is triggered (manually or automatically whenever a commit is
+done), the tests must run, artifacts for the applications must be created and
+deployment must be run over your EC2 instance. The `.gitlab-ci.yml` file will
+contain 3 stages:
+- `test`
+  - `test front`: Execute the test suite for the front app (cf `front/README.md`)
+  - `test back`: Execute the test suite for the back app (cf `back/README.md`)
+- build (the artifacts can be downloaded from gitlab)
+  - `build front`: Package the necessary file for the front to run
+(`node_modules` directory included)
+  - `build back`: Package the necessary file for the back to run
+- `deploy`
+  - `deploy`: Configure the running EC2 instance using Ansible
+
+**Bonus**: Add a `provision` **stage** between `build` and `deploy` that will
+automatically launch terraform. This step is left as a bonus because the
+complexity varies depending on how the *tfstate* file is handled.
+
+**If you don't do the bonus stage, you can apply the terraform script beforehand
+manually from your personal computer**.
+
+### A few things to note
+
+- In order to test the CI before pushing the modification in the `master`
+branch, modifications can be done separately in a dedicated branch and then
+squashed onto master in a single commit
+- Use `python` docker image for the back, `node` for the front and also `python`
+for the deployment in which you install ansible during the job
+- **DO NOT PUSH ANY SENSIBLE DATA IN YOUR CODE BASE**: secrets and private files
+**must not appear** in the code, they must instead be added dynamically by the
+CI when the job is running. For that purpose, use
+[gitlab variables](https://docs.gitlab.com/ee/ci/variables/). This is how you
+will be able to include information such as private ssh keys (required by
+ansible) or AWS credentials (required by terraform and ansible if you use
+dynamic inventory)
+- When using gitlab variable, use `File` type variable whenever your data has
+newlines in it (regular variable may unexpectedly remove the newline)
